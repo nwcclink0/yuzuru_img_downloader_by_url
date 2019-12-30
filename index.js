@@ -87,7 +87,11 @@ function removeFile(filename) {
 
 function getFilesizeInBytes(filename) {
     const fs = require("fs"); //Load the filesystem module
-    const path = process.cwd() + "\\";
+    const isWin = process.platform === "win32";
+    var path = process.cwd() + "/";
+    if (isWin) {
+        path = process.cwd() + "\\";
+    }
     const stats = fs.statSync(path + filename);
     const fileSizeInBytes = stats.size;
     // if (fileSizeInBytes < 20 * 1024 ) {
@@ -118,7 +122,12 @@ function scrapeImage(url) {
         if (image.extension.search(".jpg")>= 0){
             // console.log("original extension :" + image.extension);
             image.extension = ".jpg";
-            let fileNamePrefix = kSavePath + "\\" + Date.now();
+            const isWin = process.platform === "win32";
+            var fileNamePrefix = kSavePath + "/" + Date.now();
+            if (isWin) {
+                fileNamePrefix = kSavePath + "\\" + Date.now();
+            }
+            
             let filename = fileNamePrefix + image.name + image.extension;
             console.log("file name: " + filename);
             image.saveTo = fileNamePrefix;
