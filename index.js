@@ -121,14 +121,21 @@ function scrapeImage(url) {
     scraper.scrape(function(image) {
         if (image.extension.search(".jpg")>= 0){
             // console.log("original extension :" + image.extension);
+            let imageName;
+            if (image.address.match("mainichi")) {
+                image.address = image.address.replace(/0c2/,'9');
+                imageName = image.address.split("/")[7];
+                image.name = imageName;
+            } else {
+                image.name = Date.now();
+            }
             image.extension = ".jpg";
             const isWin = process.platform === "win32";
-            var fileNamePrefix = kSavePath + "/" + Date.now();
+            var fileNamePrefix = kSavePath + "/";
             if (isWin) {
-                fileNamePrefix = kSavePath + "\\" + Date.now();
+                fileNamePrefix = kSavePath + "\\";
             }
-            
-            let filename = fileNamePrefix + image.name + image.extension;
+            let filename = fileNamePrefix + imageName + image.extension;
             console.log("file name: " + filename);
             image.saveTo = fileNamePrefix;
             image.save();
@@ -138,7 +145,6 @@ function scrapeImage(url) {
                     // console.log("file size: " + fileSize);
                 }
             }, kWaitForWriteTime);
-
         }
     });
 }
